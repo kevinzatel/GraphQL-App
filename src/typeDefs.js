@@ -1,18 +1,44 @@
-import { gql } from 'apollo-server-express'
+import { gql } from "apollo-server-express";
 
 const typeDefs = gql`
   type Query {
-    persons: [Person],
+    persons: [Person]
     person(id: String): Person
-  },
-  type Person{
-    id: String,
-    name: String,
-    lastname: String,
+    users: [User]
+  }
+  type Person {
+    id: String
+    name: String
+    lastname: String
     age: Int
-  },
-  type Mutation{
+  }
+  type User {
+    id: String
+    name: String
+    address: String
+    birthday: String
+    posts: [Post]
+  }
+  type Post {
+    id: String
+    title: String
+    content: String
+    comments: [String]
+  }
+  input InputPost {
+    id: String
+    title: String
+    content: String
+    comments: [String]
+  }
+  type Mutation {
     addPerson(name: String!, lastname: String!, age: Int!): Person
+    addUser(
+      name: String!
+      address: String!
+      birthday: String!
+      posts: [InputPost]
+    ): User
   }
 `;
 
