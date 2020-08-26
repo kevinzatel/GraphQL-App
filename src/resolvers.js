@@ -1,23 +1,14 @@
-import personModel from "../models/person.js";
 import userModel from "../models/user.js";
+import postModel from "../models/post.js";
 
 const resolvers = {
   Query: {
-    persons: () => personModel.find({}),
     users: () => userModel.find({}),
-    person: (root, { id }) => {
-      return persons.find((person) => person.id === id);
+    user: (root, { id }) => {
+      return userModel.findOne({ id }, (err, user) => user.id === id);
     },
   },
   Mutation: {
-    addPerson: (root, { name, lastname, age }) => {
-      const person = new personModel({
-        name: name,
-        lastname: lastname,
-        age: age,
-      });
-      return person.save();
-    },
     addUser: (root, { name, address, birthday, posts }) => {
       const user = new userModel({
         name,
@@ -26,6 +17,19 @@ const resolvers = {
         posts,
       });
       return user.save();
+    },
+    addPost: (root, { userId, title, content, comments }) => {
+      const post = new postModel({
+        title,
+        content,
+        comments,
+      });
+
+      userModel.findOne({ id: userId }, (err, user) => {
+        user.posts.push(post);
+        user.save();
+      });
+      return post;
     },
   },
 };
